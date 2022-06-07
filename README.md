@@ -2210,10 +2210,10 @@ These file extensions control how a build system such as Theos should build a Lo
 
 ### Links
 
-[https://theos.dev/docs/](https://theos.dev/docs/)
-[https://cydia.saurik.com/faq/developing.html](https://cydia.saurik.com/faq/developing.html)
-[http://www.cydiasubstrate.com/id/7cee77bc-c4a5-4b8b-b6ef-36e7dd039692/](http://www.cydiasubstrate.com/id/7cee77bc-c4a5-4b8b-b6ef-36e7dd039692/)
-[http://www.cydiasubstrate.com/inject/](http://www.cydiasubstrate.com/inject/)
+[https://theos.dev/docs/](https://theos.dev/docs/)  
+[https://cydia.saurik.com/faq/developing.html](https://cydia.saurik.com/faq/developing.html)  
+[http://www.cydiasubstrate.com/id/7cee77bc-c4a5-4b8b-b6ef-36e7dd039692/](http://www.cydiasubstrate.com/id/7cee77bc-c4a5-4b8b-b6ef-36e7dd039692/)  
+[http://www.cydiasubstrate.com/inject/](http://www.cydiasubstrate.com/inject/)  
 [https://iphonedev.wiki/index.php/Cydia_Substrate](https://iphonedev.wiki/index.php/Cydia_Substrate)  
 [https://cwcaude.github.io/project/tutorial/2020/07/02/iOS-tweak-dev-1.html](https://cwcaude.github.io/project/tutorial/2020/07/02/iOS-tweak-dev-1.html)  
 [https://cwcaude.github.io/project/tutorial/2020/07/04/iOS-tweak-dev-2.html](https://cwcaude.github.io/project/tutorial/2020/07/04/iOS-tweak-dev-2.html)  
