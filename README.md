@@ -12,54 +12,110 @@ Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-s
 
 # Table of contents
 
-- iOS platform overview
-  - File System
-  - Applications
-  - Apple plist
-  - Privilege Separation and Sandbox
-  - Data Protection
-  - The Keychain
-  - App Capabilities
-  - Device Capabilities
-  - Entitlements
-  - Application security features, Apple FairPlay DRM
-  - Secure Enclave Processor
-  - AES Keys
-  - Objective-C Basics
-  - iOS Frameworks
-  - iOS Network Frameworks
-  - iOS Private Frameworks
-- Tools overview
-  - How to jailbreak
-  - How to install cydia package
-  - Access device
-  - Access filesystem
-  - Access command line
-  - Persisted data
-  - View application layout and more
-- Analyze application at runtime
-  - Frida
-  - Frida basics
-  - Frida's --eval flag
-  - Frida Intercepter
-  - Frida-Trace
-  - Bypass anti-Frida checks
-  - Objection
-  - r2frida
-  - Grapefruit (Passionfruit)
-  - Dwarf
-  - Fermion
-- Analyze application network traffic
-  - Disabling SSL pinning
-  - Intercepting with Charles Proxy
-- Get decrypted .ipa file
-- Analyze application binaries
-  - Tools
-  - Disassembling with IDA Pro
-  - IDA Pro plugins for iOS and Mach-O
-- ARM64 assembly
-- iOS tweak development
-
+<!-- TOC start -->
+- [iOS Internals & Security Testing](#ios-internals--security-testing)
+- [Table of contents](#table-of-contents)
+- [iOS platform overview](#ios-platform-overview)
+  * [File System](#file-system)
+    + [UNIX system directories](#unix-system-directories)
+    + [OS X/iOS–specific directories](#os-xiosspecific-directories)
+    + [iOS File System Idiosyncrasies](#ios-file-system-idiosyncrasies)
+  * [Applications](#applications)
+    + [ipa file (iOS App Store Package)](#ipa-file-ios-app-store-package)
+    + [ipa file contents](#ipa-file-contents)
+    + [Application data in iOS filesystem](#application-data-in-ios-filesystem)
+  * [Apple plist](#apple-plist)
+  * [Privilege Separation and Sandbox](#privilege-separation-and-sandbox)
+  * [Data Protection](#data-protection)
+  * [App Capabilities](#app-capabilities)
+  * [Device Capabilities](#device-capabilities)
+  * [Entitlements](#entitlements)
+  * [Application security features, Apple FairPlay DRM](#application-security-features-apple-fairplay-drm)
+  * [Secure Enclave Processor](#secure-enclave-processor)
+  * [AES Keys](#aes-keys)
+    + [GID Key](#gid-key)
+    + [UID Key](#uid-key)
+    + [Derived keys](#derived-keys)
+  * [Objective-C Basics](#objective-c-basics)
+    + [Message exchange](#message-exchange)
+    + [Method declaration](#method-declaration)
+  * [iOS Frameworks](#ios-frameworks)
+  * [iOS Network Frameworks](#ios-network-frameworks)
+  * [iOS Private Frameworks](#ios-private-frameworks)
+- [Tools overview](#tools-overview)
+  * [How to jailbreak](#how-to-jailbreak)
+  * [How to install cydia package](#how-to-install-cydia-package)
+  * [Access device](#access-device)
+    + [libimobiledevice](#libimobiledevice)
+    + [ideviceinstaller](#ideviceinstaller)
+    + [libirecovery](#libirecovery)
+    + [idevicerestore](#idevicerestore)
+    + [libusbmuxd](#libusbmuxd)
+  * [Access filesystem](#access-filesystem)
+  * [Access command line](#access-command-line)
+  * [Persisted data](#persisted-data)
+  * [View application layout and more](#view-application-layout-and-more)
+- [Analyze application at runtime](#analyze-application-at-runtime)
+  * [Frida](#frida)
+  * [Frida basics](#frida-basics)
+  * [Frida's --eval flag](#fridas---eval-flag)
+  * [Frida Intercepter](#frida-intercepter)
+  * [Frida-Trace](#frida-trace)
+  * [Bypass anti-Frida checks](#bypass-anti-frida-checks)
+  * [Objection](#objection)
+  * [r2frida](#r2frida)
+  * [Grapefruit (Passionfruit)](#grapefruit-passionfruit)
+  * [Dwarf](#dwarf)
+  * [Fermion](#fermion)
+- [Analyze application network traffic](#analyze-application-network-traffic)
+  * [Disabling SSL pinning](#disabling-ssl-pinning)
+  * [Intercepting with Charles Proxy](#intercepting-with-charles-proxy)
+- [Get decrypted .ipa file](#get-decrypted-ipa-file)
+    + [With Apple mobile device – Dump](#with-apple-mobile-device--dump-it-with-bagbak-with-extensions-or-frida-ios-dump-cant-dump-extensions-or-any-other-tool)
+    + [With or without Apple mobile device – Run the hardware AES decryption](#with-apple-mobile-device--run-the-hardware-aes-decryption)
+- [Analyze application binaries](#analyze-application-binaries)
+  * [Tools](#tools)
+    + [Mach-O Binary Analyzers:](#mach-o-binary-analyzers)
+    + [Hex Editors](#hex-editors)
+    + [Disassemblers](#disassemblers)
+    + [Decompilers](#decompilers)
+    + [Debuggers](#debuggers)
+    + [Memory Editors](#memory-editors)
+    + [Various Command Line Tools](#various-command-line-tools)
+  * [Disassembling with IDA Pro](#disassembling-with-ida-pro)
+  * [IDA Pro plugins for iOS and Mach-O](#ida-pro-plugins-for-ios-and-mach-o)
+    + [Kernelcache analysis](#kernelcache-analysis)
+    + [Get information about methods](#get-information-about-methods)
+    + [Retrieving  Symbols and Strings](#retrieving--symbols-and-strings)
+    + [Cross References](#cross-references)
+- [ARM64 assembly](#arm64-assembly)
+    + [Registers](#registers)
+    + [Register manipulation](#register-manipulation)
+    + [Memory](#memory)
+    + [Calling convention](#calling-convention)
+    + [Conditions](#conditions)
+    + [Branches](#branches)
+    + [Miscellaneous](#miscellaneous)
+- [iOS tweak development](#ios-tweak-development)
+  * [Theos](#theos)
+  * [Logos](#logos)
+    + [%ctor](#ctor)
+    + [%dtor](#dtor)
+  * [Block level](#block-level)
+    + [%group](#group)
+    + [%hook](#hook)
+    + [%new](#new)
+    + [%subclass](#subclass)
+    + [%property](#property)
+    + [%end](#end)
+  * [Function level](#function-level)
+    + [%init](#init)
+    + [%c](#c)
+    + [%orig](#orig)
+    + [%log](#log)
+  * [logify.pl](#logifypl)
+  * [Logos File Extensions](#logos-file-extensions)
+<!-- TOC end -->
 
 
 # iOS platform overview
@@ -71,13 +127,13 @@ Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-s
 As a conformant UNIX system, OS X works with the well-known directories that are standard on all UNIX flavors:
 
 - /bin: Unix binaries. This is where the common UNIX commands (for example, ls, rm, mv, df) are
-- /sbin: System binaries. These are binaries used for system administration, such as fi le-system management, network confi guration, and so on.
-- /usr: The User directory. This is not meant for users, but is more like Windows’ program fi les in that third-party software can install here.
+- /sbin: System binaries. These are binaries used for system administration, such as file-system management, network configuration, and so on.
+- /usr: The User directory. This is not meant for users, but is more like Windows’ program files in that third-party software can install here.
 - /usr: Contains in it bin, sbin, and lib. /usr/lib is used for shared objects (think, Windows DLLs and \windows\system32). This directory also contains the include/ subdirectory, where all the standard C headers are.
-- /etc: Et Cetera. A directory containing most of the system confi guration fi les; for example, the password fi le (/etc/passwd). In OS X, this is a symbolic link to /private/etc.
-- /dev: BSD device fi les. These are special fi les that represent hardware devices on the system (character and block devices).
+- /etc: Et Cetera. A directory containing most of the system configuration files; for example, the password file (/etc/passwd). In OS X, this is a symbolic link to /private/etc.
+- /dev: BSD device files. These are special files that represent hardware devices on the system (character and block devices).
 - /tmp: Temporary directory. The only directory in the system that is world-writable (permissions: rwxrwxrwx). In OS X, this is a symbolic link to /private/tmp.
-- /var: Various. A directory for log fi les, mail store, print spool, and other data. In OS X, this is a symbolic link to /private/var.
+- /var: Various. A directory for log files, mail store, print spool, and other data. In OS X, this is a symbolic link to /private/var.
 
 ### OS X/iOS–specific directories
 
@@ -85,18 +141,18 @@ OS X adds its own special directories to the UNIX tree, under the system root:
 
 - /Applications: Default base for all applications in system.
 - /Developer: If XCode is installed, the default installation point for all developer tools.
-- /Library: Data fi les, help, documentation, and so on for system applications.
+- /Library: Data files, help, documentation, and so on for system applications.
 - /Network: Virtual directory for neighbor node discovery and access.
-- /System: Used for System fi les. It contains only a Library subdirectory, but this directory holds virtually every major component of the system, such as frameworks (/System/ Library/Frameworks), kernel modules (/System/Library/Extensions), fonts, and so on.
+- /System: Used for System files. It contains only a Library subdirectory, but this directory holds virtually every major component of the system, such as frameworks (/System/ Library/Frameworks), kernel modules (/System/Library/Extensions), fonts, and so on.
 - /Users: Home directory for users. Every user has his or her own directory created here.
-- /Volumes: Mount point for removable media and network fi le systems.
+- /Volumes: Mount point for removable media and network file systems.
 - /Cores: Directory for core dumps, if enabled. Core dumps are created when a process crashes, if the ulimit(1) command allows it, and contain the core virtual memory image of the process.
 
 ### iOS File System Idiosyncrasies
 
 From the file system perspective, iOS is very similar to OS X, with the following differences: 
 
-- The fi le system (HFSX) is case-sensitive (unlike OS X’s HFS+, which is case preserving, yet insensitive). The file system is also encrypted in part.
+- The file system (HFSX) is case-sensitive (unlike OS X’s HFS+, which is case preserving, yet insensitive). The file system is also encrypted in part.
 - The kernel is already prepackaged with its kernel extensions, as a kernelcache (in /System/Library/Caches/com.apple.kernelcaches). Unlike OS X kernel caches (which are compressed images), iOS kernel caches are encrypted Img3.
 - /Applications may be a symbolic link to /var/stash/Applications. This is a feature of the jailbreak, not of iOS.
 - There is no /Users, but a /User — which is a symbolic link to /var/mobile
@@ -167,9 +223,9 @@ Files with the .ipa extension can be uncompressed by changing the extension to .
 
 A standard Info.plist contains the following entries:
 
-- CFBundleDevelopmentRegion: Default language if no user-specifi c language can be found.
+- CFBundleDevelopmentRegion: Default language if no user-specific language can be found.
 - CFBundleDisplayName: The name that is used to display this bundle to the user.
-- CFBundleDocumentTypes: Document types this will be associated with. This is a dictionary, with the values specifying the fi le extensions this bundle handles. The dictionary also specifi es the display icons used for the associated documents.
+- CFBundleDocumentTypes: Document types this will be associated with. This is a dictionary, with the values specifying the file extensions this bundle handles. The dictionary also specifies the display icons used for the associated documents.
 - CFBundleExecutable: The actual executable (binary or library) of this bundle. Located in Contents/MacOS.
 - CFBundleIconFile: Icon shown in Finder view.
 - CFBundleIdentifier: Reverse DNS form.
