@@ -13,8 +13,6 @@ Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-s
 # Table of contents
 
 <!-- TOC start -->
-- [iOS Internals & Security Testing](#ios-internals--security-testing)
-- [Table of contents](#table-of-contents)
 - [iOS platform overview](#ios-platform-overview)
   * [File System](#file-system)
     + [UNIX system directories](#unix-system-directories)
